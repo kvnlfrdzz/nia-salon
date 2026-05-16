@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ $service->title }} — Nia Salon</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap"
+          rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body:    'Poppins', sans-serif;
+            --pink-accent:  #ec4899;
+            --pink-deep:    #db2777;
+            --pink-soft:    #fce7f3;
+            --cream:        #fdf6f0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: #fff;
+            color: #1f1f1f;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-display);
+        }
+
+        /* Navbar */
+        #navbar {
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+        #navbar.scrolled {
+            background: rgba(255,255,255,0.90) !important;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(236,72,153,0.10);
+        }
+
+        /* Gambar utama */
+        .hero-img {
+            transition: transform 0.6s ease;
+        }
+        .hero-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Tombol WhatsApp animasi pulse */
+        .wa-pulse {
+            animation: pulse-green 2.5s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0.45); }
+            50%       { box-shadow: 0 0 0 14px rgba(37,211,102,0); }
+        }
+
+        /* Floating WA */
+        .floating-wa {
+            animation: pulse-green 2.5s infinite;
+        }
+
+        /* Kartu related hover */
+        .related-card {
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                        box-shadow 0.3s ease;
+        }
+        .related-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(236,72,153,0.14);
+        }
+        .related-card img {
+            transition: transform 0.5s ease;
+        }
+        .related-card:hover img {
+            transform: scale(1.06);
+        }
+
+        /* Breadcrumb separator */
+        .breadcrumb-sep::before {
+            content: '/';
+            margin: 0 8px;
+            color: #d1d5db;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #fff; }
+        ::-webkit-scrollbar-thumb {
+            background: #fbcfe8;
+            border-radius: 9999px;
+        }
+
+        /* Fade in page load */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+    </style>
+</head>
+
+<body>
+
+<!-- ======================================================
+     FLOATING WHATSAPP BUTTON
+====================================================== -->
+<a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20layanan%3A%20*{{ urlencode($service->title) }}*"
+   target="_blank" rel="noopener"
+   class="floating-wa fixed bottom-6 right-6 z-50 bg-green-500 text-white
+          w-14 h-14 rounded-full flex items-center justify-center shadow-xl
+          hover:bg-green-600 transition-colors"
+   title="Chat via WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.122 1.528 5.855L.057 23.882a.5.5 0 00.609.61l6.102-1.459A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.86 9.86 0 01-5.034-1.376l-.36-.214-3.733.893.922-3.65-.234-.375A9.862 9.862 0 012.118 12C2.118 6.533 6.533 2.118 12 2.118S21.882 6.533 21.882 12 17.467 21.882 12 21.882z"/>
+    </svg>
+</a>
+
+<!-- ======================================================
+     NAVBAR
+====================================================== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-white/80 py-4 px-6 lg:px-12
+                        border-b border-pink-100">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+        <!-- Logo -->
+        <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+            <div class="w-9 h-9 rounded-full bg-pink-500 flex items-center justify-center shadow
+                        group-hover:scale-105 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                    <line x1="9" y1="9" x2="9.01" y2="9"/>
+                    <line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+            </div>
+            <span style="font-family: var(--font-display);"
+                  class="text-xl font-bold text-gray-800 group-hover:text-pink-600 transition-colors">
+                Nia Salon
+            </span>
+        </a>
+
+        <!-- Menu Kanan -->
+        <div class="flex items-center gap-1">
+            <a href="{{ route('home') }}"
+               class="text-sm font-medium text-gray-600 hover:text-pink-600 px-3 py-2
+                      rounded-lg hover:bg-pink-50 transition-all">
+                Home
+            </a>
+            <a href="{{ route('home') }}#katalog-jasa"
+               class="text-sm font-medium text-gray-600 hover:text-pink-600 px-3 py-2
+                      rounded-lg hover:bg-pink-50 transition-all">
+                Jasa
+            </a>
+            <a href="{{ route('home') }}#katalog-produk"
+               class="text-sm font-medium text-gray-600 hover:text-pink-600 px-3 py-2
+                      rounded-lg hover:bg-pink-50 transition-all">
+                Produk
+            </a>
+            <a href="https://wa.me/6285862499133"
+               target="_blank" rel="noopener"
+               class="ml-2 text-sm font-semibold text-white bg-pink-500 hover:bg-pink-600
+                      px-5 py-2.5 rounded-full transition-all shadow-sm hover:shadow-md
+                      hover:shadow-pink-200">
+                Reservasi
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================================================
+     MAIN CONTENT
+====================================================== -->
+<main class="pt-24 pb-20">
+    <div class="max-w-6xl mx-auto px-6 lg:px-12">
+
+        <!-- ====== BREADCRUMB ====== -->
+        <nav class="animate-in delay-1 flex items-center flex-wrap text-sm text-gray-400 mb-8 mt-4">
+            <a href="{{ route('home') }}"
+               class="hover:text-pink-500 transition-colors font-medium">
+                Beranda
+            </a>
+            <span class="breadcrumb-sep">
+                <a href="{{ route('home') }}#katalog-jasa"
+                   class="hover:text-pink-500 transition-colors font-medium">
+                    Katalog Jasa
+                </a>
+            </span>
+            <span class="breadcrumb-sep text-pink-500 font-semibold">
+                {{ $service->title }}
+            </span>
+        </nav>
+
+        <!-- ====== LAYOUT 2 KOLOM: Gambar | Info ====== -->
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+
+            <!-- ====== KOLOM KIRI: Gambar ====== -->
+            <div class="animate-in delay-2">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-pink-100
+                            border border-pink-100 aspect-[4/3] bg-pink-50">
+                    @if($service->image_path)
+                        <img src="{{ Storage::url($service->image_path) }}"
+                             alt="{{ $service->title }}"
+                             class="hero-img w-full h-full object-cover" />
+                    @else
+                        {{-- Placeholder elegan jika belum ada gambar --}}
+                        <div class="w-full h-full flex flex-col items-center justify-center
+                                    bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-24 h-24 text-pink-200 mb-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.8">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586
+                                         a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6
+                                         a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <p class="text-pink-300 text-sm font-medium">Foto segera hadir</p>
+                        </div>
+                    @endif
+
+                    <!-- Badge "Layanan Unggulan" di pojok kiri atas -->
+                    <div class="absolute top-4 left-4 bg-pink-500 text-white text-xs
+                                font-semibold px-3 py-1.5 rounded-full shadow-md">
+                        ✦ Layanan Salon
+                    </div>
+                </div>
+
+                <!-- Galeri Thumbnail — placeholder untuk ekspansi ke depan -->
+                <div class="flex gap-3 mt-4">
+                    @if($service->image_path)
+                        <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-pink-400
+                                    shadow-sm cursor-pointer">
+                            <img src="{{ Storage::url($service->image_path) }}"
+                                 alt="{{ $service->title }}"
+                                 class="w-full h-full object-cover" />
+                        </div>
+                    @endif
+                    <!-- Slot kosong dekoratif -->
+                    <div class="w-20 h-20 rounded-xl bg-pink-50 border border-dashed border-pink-200
+                                flex items-center justify-center text-pink-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== KOLOM KANAN: Informasi Detail ====== -->
+            <div class="space-y-6">
+
+                <!-- Label Kategori -->
+                <div class="animate-in delay-2">
+                    <span class="inline-flex items-center gap-2 text-xs font-semibold
+                                 text-pink-600 bg-pink-50 border border-pink-200
+                                 px-3 py-1.5 rounded-full tracking-widest uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+                        Jasa Perawatan
+                    </span>
+                </div>
+
+                <!-- Judul Layanan -->
+                <h1 class="animate-in delay-3 text-3xl lg:text-4xl xl:text-5xl font-bold
+                           text-gray-900 leading-tight">
+                    {{ $service->title }}
+                </h1>
+
+                <!-- Harga -->
+                <div class="animate-in delay-3 flex items-baseline gap-3">
+                    <span class="text-4xl font-bold text-pink-500"
+                          style="font-family: var(--font-display);">
+                        Rp {{ number_format($service->price, 0, ',', '.') }}
+                    </span>
+                    <span class="text-sm text-gray-400 font-light">/ sesi</span>
+                </div>
+
+                <!-- Garis Dekorasi -->
+                <div class="animate-in delay-3 flex items-center gap-3">
+                    <div class="h-px flex-1 bg-gradient-to-r from-pink-200 to-transparent"></div>
+                    <span class="text-pink-300 text-xs">✦</span>
+                    <div class="h-px flex-1 bg-gradient-to-l from-pink-200 to-transparent"></div>
+                </div>
+
+                <!-- Deskripsi Lengkap -->
+                <div class="animate-in delay-4">
+                    <h3 class="text-base font-semibold text-gray-700 mb-3">
+                        Tentang Layanan Ini
+                    </h3>
+                    <div class="text-gray-500 text-sm font-light leading-7 space-y-3">
+                        {{-- nl2br: agar baris baru dalam database juga terbaca di HTML --}}
+                        {!! nl2br(e($service->description)) !!}
+                    </div>
+                </div>
+
+                <!-- Keunggulan Layanan (statis/dekoratif) -->
+                <div class="animate-in delay-4 grid grid-cols-2 gap-3">
+                    <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3
+                                border border-pink-100">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center
+                                    shadow-sm border border-pink-100 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-500"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600">Produk Premium</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3
+                                border border-pink-100">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center
+                                    shadow-sm border border-pink-100 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-500"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0
+                                         0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600">Terapis Berpengalaman</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3
+                                border border-pink-100">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center
+                                    shadow-sm border border-pink-100 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-500"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600">Tepat Waktu</span>
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3
+                                border border-pink-100">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center
+                                    shadow-sm border border-pink-100 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-500"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112
+                                         2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02
+                                         0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332
+                                         9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600">Higienis & Aman</span>
+                    </div>
+                </div>
+
+                <!-- ★ TOMBOL UTAMA: WHATSAPP ★ -->
+                <div class="animate-in delay-5 space-y-3 pt-2">
+                    <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20layanan%3A%20*{{ urlencode($service->title) }}*%20seharga%20Rp%20{{ number_format($service->price, 0, ',', '.') }}.%20Apakah%20tersedia%20untuk%20reservasi%3F%20%F0%9F%98%8A"
+                       target="_blank" rel="noopener"
+                       class="wa-pulse w-full flex items-center justify-center gap-3 bg-green-500
+                              hover:bg-green-600 text-white font-semibold text-base px-8 py-4
+                              rounded-2xl transition-all shadow-lg hover:shadow-xl
+                              hover:shadow-green-200 hover:-translate-y-0.5 active:translate-y-0">
+                        <!-- Icon WhatsApp -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 shrink-0"
+                             viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.555 4.122 1.528 5.855L.057 23.882a.5.5 0 00.609.61l6.102-1.459A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.86 9.86 0 01-5.034-1.376l-.36-.214-3.733.893.922-3.65-.234-.375A9.862 9.862 0 012.118 12C2.118 6.533 6.533 2.118 12 2.118S21.882 6.533 21.882 12 17.467 21.882 12 21.882z"/>
+                        </svg>
+                        Tanya Info via WhatsApp
+                    </a>
+
+                    <!-- Tombol kembali -->
+<a href="{{ route('home') }}#katalog-jasa"
+   class="w-full flex items-center justify-center gap-2 text-sm font-medium
+          text-gray-500 hover:text-pink-600 bg-gray-50 hover:bg-pink-50
+          border border-gray-200 hover:border-pink-200 px-8 py-3.5
+          rounded-2xl transition-all">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Kembali ke Layanan dan Produk
+</a>
+                </div>
+
+                <!-- Info jam buka -->
+                <div class="animate-in delay-5 flex items-center gap-3 text-xs text-gray-400
+                            bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-400 shrink-0"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>
+                        Kami melayani
+                        <strong class="text-gray-600">Senin–Jumat 09.00–17.00</strong>,
+                        <strong class="text-gray-600">Sabtu 10.00–17.00</strong>,
+                        <strong class="text-gray-600">Minggu 11.00–17.00</strong>
+                    </span>
+                </div>
+
+            </div>
+            <!-- ====== AKHIR KOLOM KANAN ====== -->
+
+        </div>
+        <!-- ====== AKHIR GRID 2 KOLOM ====== -->
+
+
+        <!-- ======================================================
+             SECTION: Layanan Terkait Lainnya
+        ====================================================== -->
+        @if($related->isNotEmpty())
+            <div class="mt-24">
+                <!-- Header Section -->
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="h-px flex-1 bg-pink-100"></div>
+                    <div class="text-center">
+                        <p class="text-xs font-semibold text-pink-400 tracking-widest uppercase mb-1">
+                            Pilihan Lainnya
+                        </p>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-gray-800">
+                            Layanan <span class="italic text-pink-500">Terkait</span>
+                        </h2>
+                    </div>
+                    <div class="h-px flex-1 bg-pink-100"></div>
+                </div>
+
+                <!-- Grid Kartu Related -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($related as $item)
+                        <a href="{{ route('service.show', $item->id) }}"
+                           class="related-card bg-white rounded-2xl overflow-hidden border
+                                  border-pink-100 block no-underline group">
+
+                            <!-- Gambar -->
+                            <div class="relative h-44 bg-pink-50 overflow-hidden">
+                                @if($item->image_path)
+                                    <img src="{{ Storage::url($item->image_path) }}"
+                                         alt="{{ $item->title }}"
+                                         class="w-full h-full object-cover" />
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center
+                                                bg-gradient-to-br from-pink-50 to-rose-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="w-10 h-10 text-pink-200" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586
+                                                     a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6
+                                                     a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                @endif
+                                <div class="absolute top-3 right-3 bg-white/90 text-pink-600
+                                            text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                                    Rp {{ number_format($item->price, 0, ',', '.') }}
+                                </div>
+                            </div>
+
+                            <!-- Info -->
+                            <div class="p-5">
+                                <h3 class="font-bold text-gray-800 group-hover:text-pink-600
+                                           transition-colors mb-2 leading-snug">
+                                    {{ $item->title }}
+                                </h3>
+                                <p class="text-xs text-gray-400 font-light leading-relaxed
+                                          line-clamp-2">
+                                    {{ $item->description }}
+                                </p>
+                                <div class="flex items-center gap-1 mt-4 text-xs font-semibold
+                                            text-pink-500 group-hover:gap-2 transition-all">
+                                    Lihat Detail
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5"
+                                         fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+    </div>
+</main>
+<!-- ====== AKHIR MAIN ====== -->
+
+
+<!-- ======================================================
+     FOOTER MINI
+====================================================== -->
+<footer style="background-color: #fce7f3;" class="border-t border-pink-200">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-8 flex flex-col sm:flex-row
+                items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-pink-500 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                    <line x1="9" y1="9" x2="9.01" y2="9"/>
+                    <line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+            </div>
+            <span style="font-family: var(--font-display);"
+                  class="font-bold text-gray-700">
+                Nia Salon
+            </span>
+        </div>
+        <p class="text-xs text-gray-400 text-center">
+            © {{ date('Y') }} Nia Salon — Semua hak cipta dilindungi.
+        </p>
+        <a href="{{ route('home') }}"
+           class="text-xs text-pink-500 hover:text-pink-700 font-medium transition-colors">
+            ← Kembali ke Beranda
+        </a>
+    </div>
+</footer>
+
+<!-- ======================================================
+     JAVASCRIPT
+====================================================== -->
+<script>
+    // Navbar glassmorphism saat scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+</script>
+
+</body>
+</html>
