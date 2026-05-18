@@ -154,8 +154,8 @@
 {{-- ══════════════════════════════════════════
      NAVBAR (selalu tampil, search + search mode)
 ══════════════════════════════════════════ --}}
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-transparent py-4 px-6 lg:px-12">
-    <div class="max-w-7xl mx-auto flex items-center gap-6">
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-transparent py-4 px-6 lg:px-12 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-6">
 
         {{-- Logo --}}
         <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center gap-2 group">
@@ -177,48 +177,77 @@
             </span>
         </a>
 
-        {{-- Search Bar --}}
-        <form action="{{ route('home') }}" method="GET"
-              class="search-bar flex-1 max-w-sm mx-auto hidden md:block">
+        {{-- Mobile Menu Button (Hamburger) --}}
+        <button id="mobile-menu-btn" class="md:hidden text-gray-800 hover:text-pink-600 focus:outline-none">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+
+        {{-- Desktop Menu --}}
+        <div class="hidden md:flex flex-1 items-center gap-6">
+            {{-- Search Bar --}}
+            <form action="{{ route('home') }}" method="GET" class="search-bar flex-1 max-w-sm mx-auto">
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-400"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text"
+                           name="search"
+                           value="{{ request('search') }}"
+                           placeholder="Cari layanan atau produk..."
+                           class="w-full pl-10 pr-4 py-2.5 rounded-full border border-pink-200
+                                  bg-white/80 text-sm text-gray-700 placeholder-gray-400
+                                  focus:ring-2 focus:ring-pink-300 focus:border-transparent
+                                  transition-all" />
+                </div>
+            </form>
+
+            {{-- Nav Links --}}
+            <div class="flex items-center gap-1 ml-auto">
+                @if(!request('search'))
+                    <a href="#katalog-jasa"
+                       class="text-sm font-medium text-gray-700 hover:text-pink-600 px-3 py-2
+                              rounded-lg hover:bg-pink-50 transition-all">
+                        Jasa
+                    </a>
+                    <a href="#katalog-produk"
+                       class="text-sm font-medium text-gray-700 hover:text-pink-600 px-3 py-2
+                              rounded-lg hover:bg-pink-50 transition-all">
+                        Produk
+                    </a>
+                @endif
+                <a href="#kontak"
+                   class="ml-2 text-sm font-semibold text-white bg-pink-500 hover:bg-pink-600
+                          px-5 py-2.5 rounded-full transition-all shadow-sm">
+                    Reservasi
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {{-- Mobile Dropdown Menu --}}
+    <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-pink-100 py-4 px-6 flex-col gap-4">
+        <form action="{{ route('home') }}" method="GET" class="w-full">
             <div class="relative">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-400"
-                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text"
-                       name="search"
-                       value="{{ request('search') }}"
-                       placeholder="Cari layanan atau produk..."
-                       class="w-full pl-10 pr-4 py-2.5 rounded-full border border-pink-200
-                              bg-white/80 text-sm text-gray-700 placeholder-gray-400
-                              focus:ring-2 focus:ring-pink-300 focus:border-transparent
-                              transition-all" />
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari layanan atau produk..." class="w-full pl-10 pr-4 py-2.5 rounded-full border border-pink-200 bg-white text-sm text-gray-700 focus:ring-2 focus:ring-pink-300 transition-all" />
             </div>
         </form>
-
-        {{-- Nav Links --}}
-        <div class="flex items-center gap-1 ml-auto">
+        <div class="flex flex-col gap-1 mt-2">
             @if(!request('search'))
-                <a href="#katalog-jasa"
-                   class="text-sm font-medium text-gray-700 hover:text-pink-600 px-3 py-2
-                          rounded-lg hover:bg-pink-50 transition-all">
-                    Jasa
-                </a>
-                <a href="#katalog-produk"
-                   class="text-sm font-medium text-gray-700 hover:text-pink-600 px-3 py-2
-                          rounded-lg hover:bg-pink-50 transition-all">
-                    Produk
-                </a>
+                <a href="#katalog-jasa" class="text-base font-medium text-gray-700 hover:text-pink-600 py-2 border-b border-gray-50">Jasa</a>
+                <a href="#katalog-produk" class="text-base font-medium text-gray-700 hover:text-pink-600 py-2 border-b border-gray-50">Produk</a>
             @endif
-            <a href="#kontak"
-               class="ml-2 text-sm font-semibold text-white bg-pink-500 hover:bg-pink-600
-                      px-5 py-2.5 rounded-full transition-all shadow-sm">
-                Reservasi
+            <a href="#kontak" class="text-center text-sm font-semibold text-white bg-pink-500 hover:bg-pink-600 px-5 py-3 rounded-full transition-all shadow-sm mt-4 w-full">
+                Reservasi Sekarang
             </a>
         </div>
-
     </div>
 </nav>
 {{-- ── AKHIR NAVBAR ── --}}
@@ -416,16 +445,16 @@
 
         <div class="max-w-7xl mx-auto px-6 lg:px-12 py-32 grid lg:grid-cols-2 gap-12 items-center">
 
-            <div class="text-center lg:text-left space-y-7">
+            <div class="text-center lg:text-left space-y-7 mt-10 md:mt-0">
                 <div class="inline-flex items-center gap-3 bg-white/70 backdrop-blur-sm
-                            border border-pink-200 rounded-full px-4 py-1.5">
+                            border border-pink-200 rounded-full px-4 py-1.5 mt-8 md:mt-0">
                     <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
                     <span class="text-xs font-semibold text-pink-600 tracking-widest uppercase">
                         Premium Beauty Experience
                     </span>
                 </div>
 
-                <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-gray-900">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-gray-900">
                     Temukan
                     <span class="block italic text-pink-500" style="font-family: var(--font-display);">
                         Kecantikan
@@ -460,21 +489,21 @@
                     </a>
                 </div>
 
-                <div class="flex items-center gap-8 pt-4 justify-center lg:justify-start">
+                <div class="flex flex-wrap items-center gap-4 sm:gap-8 pt-4 justify-center lg:justify-start">
                     <div class="text-center lg:text-left">
                         <p class="text-2xl font-bold text-pink-600" style="font-family: var(--font-display);">
                             1000+
                         </p>
                         <p class="text-xs text-gray-400 font-medium">Pelanggan Puas</p>
                     </div>
-                    <div class="w-px h-10 bg-pink-200"></div>
+                    <div class="w-px h-10 bg-pink-200 hidden sm:block"></div>
                     <div class="text-center lg:text-left">
                         <p class="text-2xl font-bold text-pink-600" style="font-family: var(--font-display);">
                             30+
                         </p>
                         <p class="text-xs text-gray-400 font-medium">Jenis Layanan</p>
                     </div>
-                    <div class="w-px h-10 bg-pink-200"></div>
+                    <div class="w-px h-10 bg-pink-200 hidden sm:block"></div>
                     <div class="text-center lg:text-left">
                         <p class="text-2xl font-bold text-pink-600" style="font-family: var(--font-display);">
                             5★
@@ -876,24 +905,6 @@
                             <a href="https://wa.me/6285862499133" target="_blank" rel="noopener"
                                class="footer-link">+62 858-6249-9133</a>
                         </li>
-                        <!-- <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="w-4 h-4 text-pink-400 shrink-0" fill="currentColor"
-                                 viewBox="0 0 24 24">
-                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
-                            </svg>
-                            <a href="https://instagram.com/nia_salon_gemolong" target="_blank" rel="noopener"
-                               class="footer-link">@nia_salon_gemolong</a>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="w-4 h-4 text-pink-400 shrink-0" fill="currentColor"
-                                 viewBox="0 0 24 24">
-                                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.18 8.18 0 004.78 1.54V6.84a4.85 4.85 0 01-1.01-.15z"/>
-                            </svg>
-                            <a href="https://tiktok.com/@niasalongemolong05" target="_blank" rel="noopener"
-                               class="footer-link">@niasalongemolong05</a>
-                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -923,6 +934,25 @@
         navbar.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
 
+    // Mobile Menu Toggle Fix
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if(mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            
+            // Tambahkan background solid ke navbar jika menu dibuka dan posisi sedang di atas
+            if (!navbar.classList.contains('scrolled') && !mobileMenu.classList.contains('hidden')) {
+                navbar.style.background = 'rgba(255,255,255,0.98)';
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+            } else if (!navbar.classList.contains('scrolled')) {
+                navbar.style.background = 'transparent';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    }
+
     // Fade-up observer (hanya untuk landing page, bukan search page)
     const fadeEls = document.querySelectorAll('.fade-up');
     if (fadeEls.length > 0) {
@@ -942,7 +972,18 @@
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Tutup mobile menu setelah klik link
+                if(mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                    if (!navbar.classList.contains('scrolled')) {
+                        navbar.style.background = 'transparent';
+                        navbar.style.boxShadow = 'none';
+                    }
+                }
+            }
         });
     });
 

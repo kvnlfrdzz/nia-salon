@@ -40,7 +40,8 @@
             top: 0; left: 0; bottom: 0;
             display: flex;
             flex-direction: column;
-            z-index: 30;
+            z-index: 40;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-logo {
@@ -96,6 +97,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: margin-left 0.3s ease;
         }
 
         /* ── Top Bar ────────────────────────────── */
@@ -110,6 +112,22 @@
             position: sticky;
             top: 0;
             z-index: 20;
+        }
+
+        /* ── Mobile Overrides ───────────────────── */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
         }
 
         /* ── Table ──────────────────────────────── */
@@ -178,6 +196,7 @@
             border: 1px solid #fde68a;
             transition: all 0.2s ease;
             text-decoration: none;
+            white-space: nowrap;
         }
         .btn-edit:hover {
             background: #fbbf24;
@@ -198,6 +217,7 @@
             border: 1px solid #fecdd3;
             transition: all 0.2s ease;
             cursor: pointer;
+            white-space: nowrap;
         }
         .btn-delete:hover {
             background: #f43f5e;
@@ -250,7 +270,7 @@
         }
 
         /* ── Custom Scrollbar ───────────────────── */
-        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar { width: 4px; height: 6px;}
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #fbcfe8; border-radius: 99px; }
 
@@ -259,7 +279,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 50;
+            z-index: 60;
             background: rgba(0,0,0,0.35);
             backdrop-filter: blur(4px);
             align-items: center;
@@ -298,6 +318,9 @@
 
 <body>
 
+{{-- Sidebar Overlay (Mobile) --}}
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm transition-opacity opacity-0 pointer-events-none" onclick="toggleSidebar()"></div>
+
 {{-- ╔══════════════════════════════════════════════╗
      ║  MODAL KONFIRMASI HAPUS                     ║
      ╚══════════════════════════════════════════════╝ --}}
@@ -333,7 +356,7 @@
             <div class="flex gap-3">
                 <button type="button"
                         onclick="closeDeleteModal()"
-                        class="flex-1 py-3 rounded-14px font-semibold text-sm text-gray-600
+                        class="flex-1 py-3 font-semibold text-sm text-gray-600
                                bg-gray-100 hover:bg-gray-200 transition-colors rounded-xl">
                     Batal
                 </button>
@@ -355,7 +378,7 @@
 <aside class="sidebar">
 
     {{-- Logo --}}
-    <div class="p-6 border-b border-pink-100">
+    <div class="p-6 border-b border-pink-100 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600
                         flex items-center justify-center shadow-md shadow-pink-200">
@@ -373,6 +396,10 @@
                 <p class="text-xs text-gray-400 -mt-0.5">Admin Panel</p>
             </div>
         </div>
+        {{-- Close Sidebar Button (Mobile) --}}
+        <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-pink-500">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
     </div>
 
     {{-- Navigasi --}}
@@ -443,7 +470,7 @@
 
     {{-- Footer Sidebar: Info User --}}
     <div class="p-4 border-t border-pink-100">
-        <div class="flex items-center gap-3 p-3 rounded-16px bg-pink-50 rounded-xl">
+        <div class="flex items-center gap-3 p-3 bg-pink-50 rounded-xl">
             <div class="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-rose-400
                         flex items-center justify-center text-white font-bold text-sm shadow-sm">
                 {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
@@ -484,38 +511,47 @@
     {{-- ── TOP BAR ──────────────────────────────── --}}
     <header class="topbar">
         {{-- Breadcrumb --}}
-        <div>
-            <div class="flex items-center gap-2 text-sm text-gray-400">
-                <a href="{{ route('admin.dashboard') }}" class="hover:text-pink-500 transition-colors">
-                    Dashboard
-                </a>
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        <div class="flex items-center">
+            {{-- Mobile Sidebar Toggle --}}
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-500 hover:text-pink-600 focus:outline-none p-2 mr-2 -ml-2 rounded-lg hover:bg-pink-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
-                <span class="text-pink-600 font-semibold">Kelola Layanan</span>
+            </button>
+            <div>
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <a href="{{ route('admin.dashboard') }}" class="hover:text-pink-500 transition-colors hidden sm:inline-block">
+                        Dashboard
+                    </a>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 hidden sm:inline-block" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <span class="text-pink-600 font-semibold">Kelola Layanan</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5">
+                    {{ $services->total() }} layanan terdaftar
+                </p>
             </div>
-            <p class="text-xs text-gray-400 mt-0.5">
-                {{ $services->total() }} layanan terdaftar
-            </p>
         </div>
 
         {{-- Tombol Tambah --}}
         <a href="{{ route('admin.services.create') }}"
            class="inline-flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white
-                  font-semibold text-sm px-5 py-2.5 rounded-full transition-all
+                  font-semibold text-sm px-4 py-2 sm:px-5 sm:py-2.5 rounded-full transition-all
                   shadow-md shadow-pink-200 hover:shadow-pink-300 hover:-translate-y-0.5
-                  active:translate-y-0">
+                  active:translate-y-0 whitespace-nowrap">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
             </svg>
-            Tambah Layanan
+            <span class="hidden sm:inline">Tambah Layanan</span>
+            <span class="sm:hidden">Tambah</span>
         </a>
     </header>
 
     {{-- ── PAGE BODY ────────────────────────────── --}}
-    <div class="p-8 flex-1">
+    <div class="p-4 sm:p-8 flex-1">
 
         {{-- Flash Message Sukses --}}
         @if (session('success'))
@@ -538,7 +574,7 @@
         @endif
 
         {{-- Stat Cards --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
 
             {{-- Total Layanan --}}
             <div class="bg-white rounded-2xl border border-pink-100 p-5 flex items-center gap-4
@@ -621,7 +657,7 @@
                 </div>
                 {{-- Hint --}}
                 <span class="text-xs text-gray-400 hidden sm:block">
-                    Klik baris untuk melihat detail
+                    Geser tabel ke kanan pada HP
                 </span>
             </div>
 
@@ -658,8 +694,8 @@
 
             @else
                 {{-- ── TABEL ───────────────────── --}}
-                <div class="overflow-x-auto">
-                    <table>
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full min-w-[700px]">
                         <thead>
                             <tr>
                                 <th style="width:48px;">#</th>
@@ -701,7 +737,7 @@
 
                                     {{-- Nama --}}
                                     <td>
-                                        <p class="font-semibold text-gray-800 text-sm">
+                                        <p class="font-semibold text-gray-800 text-sm whitespace-nowrap">
                                             {{ $service->title }}
                                         </p>
                                     </td>
@@ -794,7 +830,7 @@
                         </p>
 
                         {{-- Paginasi Manual (tanpa Bootstrap) --}}
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-1.5 flex-wrap justify-center">
 
                             {{-- Prev --}}
                             @if($services->onFirstPage())
@@ -874,6 +910,22 @@
 
 {{-- ── JAVASCRIPT ──────────────────────────────── --}}
 <script>
+    /* ─── Toggle Sidebar Mobile ─── */
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('open');
+        
+        if (sidebar.classList.contains('open')) {
+            overlay.classList.remove('hidden', 'pointer-events-none');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        } else {
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden', 'pointer-events-none'), 300);
+        }
+    }
+
     /* ─── Modal Hapus ─── */
     function openDeleteModal(id, name) {
         document.getElementById('deleteServiceName').textContent = name;
