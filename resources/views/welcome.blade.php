@@ -547,8 +547,10 @@
 
         </div>
 
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center
-                    gap-2 text-gray-400 animate-bounce">
+        {{-- Scroll Indicator: menggunakan left-0 right-0 + flex justify-center
+             agar presisi di tengah layar di semua ukuran, termasuk mobile --}}
+        <div class="absolute bottom-8 left-0 right-0 flex flex-col items-center justify-center
+                    gap-2 text-gray-400 animate-bounce text-center mx-auto">
             <span class="text-xs font-medium tracking-widest uppercase">Scroll</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

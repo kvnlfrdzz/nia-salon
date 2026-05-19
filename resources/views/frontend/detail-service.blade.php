@@ -117,7 +117,7 @@
 <body>
 
 <!-- ======================================================
-     FLOATING WHATSAPP BUTTON
+     FLOATING WHATSAPP BUTTON (tombol bulat, selalu tampil)
 ====================================================== -->
 <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20layanan%3A%20*{{ urlencode($service->title) }}*"
    target="_blank" rel="noopener"
@@ -157,8 +157,8 @@
             </span>
         </a>
 
-        <!-- Menu Kanan -->
-        <div class="flex items-center gap-1">
+        <!-- Menu Kanan — DISEMBUNYIKAN di mobile, tampil di md ke atas -->
+        <div class="hidden md:flex items-center gap-1">
             <a href="{{ route('home') }}"
                class="text-sm font-medium text-gray-600 hover:text-pink-600 px-3 py-2
                       rounded-lg hover:bg-pink-50 transition-all">
@@ -182,14 +182,27 @@
                 Reservasi
             </a>
         </div>
+
+        <!-- Tombol Kembali sederhana untuk mobile -->
+        <!-- <a href="{{ route('home') }}"
+           class="md:hidden flex items-center gap-1.5 text-sm font-medium text-pink-600
+                  hover:text-pink-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali
+        </a> -->
     </div>
 </nav>
 
 <!-- ======================================================
      MAIN CONTENT
+     pt-28 di mobile agar tidak tertimpa navbar fixed,
+     md:pt-24 kembali ke normal di layar lebih besar
 ====================================================== -->
-<main class="pt-24 pb-20">
-    <div class="max-w-6xl mx-auto px-6 lg:px-12">
+<main class="pt-28 md:pt-24 pb-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
 
         <!-- ====== BREADCRUMB ====== -->
         <nav class="animate-in delay-1 flex items-center flex-wrap text-sm text-gray-400 mb-8 mt-4">
@@ -208,15 +221,18 @@
             </span>
         </nav>
 
-        <!-- ====== LAYOUT 2 KOLOM: Gambar | Info ====== -->
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <!-- ====== LAYOUT 2 KOLOM: Gambar | Info ======
+             Di mobile: kolom tunggal (stack vertikal)
+             Di lg ke atas: 2 kolom berdampingan
+        ====== -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             <!-- ====== KOLOM KIRI: Gambar ====== -->
             <div class="animate-in delay-2">
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-pink-100
                             border border-pink-100 aspect-[4/3] bg-pink-50">
                     @if($service->image_path)
-                        <img src="{{ Storage::url($service->image_path) }}"
+                        <img src="{{ asset('storage/' . $service->image_path) }}"
                              alt="{{ $service->title }}"
                              class="hero-img w-full h-full object-cover" />
                     @else
@@ -235,19 +251,19 @@
                         </div>
                     @endif
 
-                    <!-- Badge "Layanan Unggulan" di pojok kiri atas -->
+                    <!-- Badge "Layanan Salon" di pojok kiri atas -->
                     <div class="absolute top-4 left-4 bg-pink-500 text-white text-xs
                                 font-semibold px-3 py-1.5 rounded-full shadow-md">
                         ✦ Layanan Salon
                     </div>
                 </div>
 
-                <!-- Galeri Thumbnail — placeholder untuk ekspansi ke depan -->
+                <!-- Galeri Thumbnail -->
                 <div class="flex gap-3 mt-4">
                     @if($service->image_path)
                         <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-pink-400
                                     shadow-sm cursor-pointer">
-                            <img src="{{ Storage::url($service->image_path) }}"
+                            <img src="{{ asset('storage/' . $service->image_path) }}"
                                  alt="{{ $service->title }}"
                                  class="w-full h-full object-cover" />
                         </div>
@@ -310,8 +326,11 @@
                     </div>
                 </div>
 
-                <!-- Keunggulan Layanan (statis/dekoratif) -->
-                <div class="animate-in delay-4 grid grid-cols-2 gap-3">
+                <!-- Keunggulan Layanan (statis/dekoratif)
+                     Di mobile: 1 kolom vertikal (grid-cols-1)
+                     Di sm ke atas: 2 kolom (sm:grid-cols-2)
+                -->
+                <div class="animate-in delay-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3
                                 border border-pink-100">
                         <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center
@@ -366,11 +385,15 @@
                     </div>
                 </div>
 
-                <!-- ★ TOMBOL UTAMA: WHATSAPP ★ -->
+                <!-- ★ TOMBOL UTAMA: WHATSAPP ★
+                     Tombol panjang ini DISEMBUNYIKAN di mobile (hidden),
+                     hanya tampil di md ke atas (md:flex).
+                     Di HP, pengguna pakai tombol floating bulat di pojok kanan bawah.
+                -->
                 <div class="animate-in delay-5 space-y-3 pt-2">
                     <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20layanan%3A%20*{{ urlencode($service->title) }}*%20seharga%20Rp%20{{ number_format($service->price, 0, ',', '.') }}.%20Apakah%20tersedia%20untuk%20reservasi%3F%20%F0%9F%98%8A"
                        target="_blank" rel="noopener"
-                       class="wa-pulse w-full flex items-center justify-center gap-3 bg-green-500
+                       class="wa-pulse w-full hidden md:flex items-center justify-center gap-3 bg-green-500
                               hover:bg-green-600 text-white font-semibold text-base px-8 py-4
                               rounded-2xl transition-all shadow-lg hover:shadow-xl
                               hover:shadow-green-200 hover:-translate-y-0.5 active:translate-y-0">
@@ -384,18 +407,18 @@
                     </a>
 
                     <!-- Tombol kembali -->
-<a href="{{ route('home') }}#katalog-jasa"
-   class="w-full flex items-center justify-center gap-2 text-sm font-medium
-          text-gray-500 hover:text-pink-600 bg-gray-50 hover:bg-pink-50
-          border border-gray-200 hover:border-pink-200 px-8 py-3.5
-          rounded-2xl transition-all">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-    </svg>
-    Kembali ke Layanan dan Produk
-</a>
+                    <a href="{{ route('home') }}#katalog-jasa"
+                       class="w-full flex items-center justify-center gap-2 text-sm font-medium
+                              text-gray-500 hover:text-pink-600 bg-gray-50 hover:bg-pink-50
+                              border border-gray-200 hover:border-pink-200 px-8 py-3.5
+                              rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Kembali ke Layanan dan Produk
+                    </a>
                 </div>
 
                 <!-- Info jam buka -->
@@ -450,7 +473,7 @@
                             <!-- Gambar -->
                             <div class="relative h-44 bg-pink-50 overflow-hidden">
                                 @if($item->image_path)
-                                    <img src="{{ Storage::url($item->image_path) }}"
+                                    <img src="{{ asset('storage/' . $item->image_path) }}"
                                          alt="{{ $item->title }}"
                                          class="w-full h-full object-cover" />
                                 @else

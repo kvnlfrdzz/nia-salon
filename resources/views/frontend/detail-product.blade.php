@@ -84,7 +84,7 @@
 </head>
 <body>
 
-<!-- Floating WA -->
+<!-- Floating WA (tombol bulat, selalu tampil di semua ukuran layar) -->
 <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20produk%3A%20*{{ urlencode($product->name) }}*"
    target="_blank" rel="noopener"
    class="wa-pulse fixed bottom-6 right-6 z-50 bg-green-500 text-white w-14 h-14
@@ -101,6 +101,8 @@
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-white/80 py-4 px-6 lg:px-12
                         border-b border-pink-100">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+        <!-- Logo -->
         <a href="{{ route('home') }}" class="flex items-center gap-2 group">
             <div class="w-9 h-9 rounded-full bg-pink-500 flex items-center justify-center shadow
                         group-hover:scale-105 transition-transform">
@@ -118,7 +120,9 @@
                 Nia Salon
             </span>
         </a>
-        <div class="flex items-center gap-1">
+
+        <!-- Menu Kanan — DISEMBUNYIKAN di mobile, tampil di md ke atas -->
+        <div class="hidden md:flex items-center gap-1">
             <a href="{{ route('home') }}"
                class="text-sm font-medium text-gray-600 hover:text-pink-600 px-3 py-2
                       rounded-lg hover:bg-pink-50 transition-all">Home</a>
@@ -134,11 +138,26 @@
                 Reservasi
             </a>
         </div>
+
+        <!-- Tombol Kembali sederhana untuk mobile -->
+        <a href="{{ route('home') }}"
+           class="md:hidden flex items-center gap-1.5 text-sm font-medium text-pink-600
+                  hover:text-pink-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali
+        </a>
     </div>
 </nav>
 
-<main class="pt-24 pb-20">
-    <div class="max-w-6xl mx-auto px-6 lg:px-12">
+<!-- Main Content
+     pt-28 di mobile agar tidak tertimpa navbar fixed,
+     md:pt-24 kembali ke normal di layar lebih besar
+-->
+<main class="pt-28 md:pt-24 pb-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
 
         <!-- Breadcrumb -->
         <nav class="animate-in delay-1 flex items-center flex-wrap text-sm text-gray-400 mb-8 mt-4">
@@ -156,15 +175,18 @@
             </span>
         </nav>
 
-        <!-- Grid 2 Kolom -->
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <!-- Grid 2 Kolom
+             Di mobile: kolom tunggal (stack vertikal, gambar di atas info)
+             Di lg ke atas: 2 kolom berdampingan
+        -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             <!-- Gambar Produk -->
             <div class="animate-in delay-2">
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-pink-100
                             border border-pink-100 aspect-square bg-pink-50">
                     @if($product->image_path)
-                        <img src="{{ Storage::url($product->image_path) }}"
+                        <img src="{{ asset('storage/' . $product->image_path) }}"
                              alt="{{ $product->name }}"
                              class="hero-img w-full h-full object-cover" />
                     @else
@@ -189,7 +211,7 @@
                 <div class="flex gap-3 mt-4">
                     @if($product->image_path)
                         <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-pink-400 shadow-sm">
-                            <img src="{{ Storage::url($product->image_path) }}"
+                            <img src="{{ asset('storage/' . $product->image_path) }}"
                                  alt="{{ $product->name }}"
                                  class="w-full h-full object-cover" />
                         </div>
@@ -242,8 +264,11 @@
                     </div>
                 </div>
 
-                <!-- Keunggulan Produk -->
-                <div class="animate-in delay-4 grid grid-cols-2 gap-3">
+                <!-- Keunggulan Produk
+                     Di mobile: 1 kolom vertikal (grid-cols-1)
+                     Di sm ke atas: 2 kolom (sm:grid-cols-2)
+                -->
+                <div class="animate-in delay-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="flex items-center gap-2.5 bg-pink-50 rounded-xl px-4 py-3 border border-pink-100">
                         <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm border border-pink-100 shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-pink-500"
@@ -285,11 +310,15 @@
                     </div>
                 </div>
 
-                <!-- ★ TOMBOL WHATSAPP UTAMA ★ -->
+                <!-- ★ TOMBOL WHATSAPP UTAMA ★
+                     Tombol panjang ini DISEMBUNYIKAN di mobile (hidden),
+                     hanya tampil di md ke atas (md:flex).
+                     Di HP, pengguna pakai tombol floating bulat di pojok kanan bawah.
+                -->
                 <div class="animate-in delay-5 space-y-3 pt-2">
                     <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20produk%3A%20*{{ urlencode($product->name) }}*%20seharga%20Rp%20{{ number_format($product->price, 0, ',', '.') }}.%20Apakah%20stok%20masih%20tersedia%3F%20%F0%9F%98%8A"
                        target="_blank" rel="noopener"
-                       class="wa-pulse w-full flex items-center justify-center gap-3 bg-green-500
+                       class="wa-pulse w-full hidden md:flex items-center justify-center gap-3 bg-green-500
                               hover:bg-green-600 text-white font-semibold text-base px-8 py-4
                               rounded-2xl transition-all shadow-lg hover:shadow-xl
                               hover:shadow-green-200 hover:-translate-y-0.5 active:translate-y-0">
@@ -301,18 +330,18 @@
                         Tanya Info via WhatsApp
                     </a>
 
-<a href="{{ route('home') }}#katalog-produk"
-   class="w-full flex items-center justify-center gap-2 text-sm font-medium
-          text-gray-500 hover:text-pink-600 bg-gray-50 hover:bg-pink-50
-          border border-gray-200 hover:border-pink-200 px-8 py-3.5
-          rounded-2xl transition-all">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-    </svg>
-    Kembali ke Layanan dan Produk
-</a>
+                    <a href="{{ route('home') }}#katalog-produk"
+                       class="w-full flex items-center justify-center gap-2 text-sm font-medium
+                              text-gray-500 hover:text-pink-600 bg-gray-50 hover:bg-pink-50
+                              border border-gray-200 hover:border-pink-200 px-8 py-3.5
+                              rounded-2xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Kembali ke Layanan dan Produk
+                    </a>
                 </div>
 
             </div>
@@ -341,7 +370,7 @@
                                   border-pink-50 block no-underline group shadow-sm">
                             <div class="relative aspect-square bg-pink-50 overflow-hidden">
                                 @if($item->image_path)
-                                    <img src="{{ Storage::url($item->image_path) }}"
+                                    <img src="{{ asset('storage/' . $item->image_path) }}"
                                          alt="{{ $item->name }}"
                                          class="w-full h-full object-cover" />
                                 @else
