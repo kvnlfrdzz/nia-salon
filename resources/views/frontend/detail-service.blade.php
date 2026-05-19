@@ -386,14 +386,14 @@
                 </div>
 
                 <!-- ★ TOMBOL UTAMA: WHATSAPP ★
-                     Tombol panjang ini DISEMBUNYIKAN di mobile (hidden),
-                     hanya tampil di md ke atas (md:flex).
-                     Di HP, pengguna pakai tombol floating bulat di pojok kanan bawah.
+                     PERBAIKAN: Hapus "hidden md:flex", ganti jadi "flex" agar tampil di semua ukuran.
+                     Di mobile: w-full + justify-center = tombol penuh lebar & teks di tengah.
+                     mt-4 memberi jarak dari konten di atasnya.
                 -->
                 <div class="animate-in delay-5 space-y-3 pt-2">
                     <a href="https://wa.me/6285862499133?text=Halo%20admin%20Nia%20Salon%2C%20saya%20ingin%20bertanya%20tentang%20layanan%3A%20*{{ urlencode($service->title) }}*%20seharga%20Rp%20{{ number_format($service->price, 0, ',', '.') }}.%20Apakah%20tersedia%20untuk%20reservasi%3F%20%F0%9F%98%8A"
                        target="_blank" rel="noopener"
-                       class="wa-pulse w-full hidden md:flex items-center justify-center gap-3 bg-green-500
+                       class="wa-pulse mt-4 w-full flex items-center justify-center gap-3 bg-green-500
                               hover:bg-green-600 text-white font-semibold text-base px-8 py-4
                               rounded-2xl transition-all shadow-lg hover:shadow-xl
                               hover:shadow-green-200 hover:-translate-y-0.5 active:translate-y-0">
