@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,10 +19,15 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-public function boot(): void
-{
-    if (config('app.env') === 'production') {
-        URL::forceScheme('https');
+    public function boot(): void
+    {
+        // Jika aplikasi berjalan di server Render (production)
+        if ($this->app->environment('production')) {
+            // 1. Otomatis jalankan migrasi database ke Supabase
+            Artisan::call('migrate', ['--force' => true]);
+            
+            // 2. Paksa semua aset CSS/JS dan URL menggunakan HTTPS
+            URL::forceScheme('https');
+        }
     }
-}
 }
