@@ -42,25 +42,23 @@ public function authenticate(): void
 {
     $this->ensureIsNotRateLimited();
 
-// 1. Cari user berdasarkan email
-$user = \App\Models\User::where('email', $this->input('email'))->first();
+    // 1. Cari user berdasarkan email
+    $user = \App\Models\User::where('email', $this->input('email'))->first();
 
-// 2. Cek apakah usernya ada dan password MD5-nya cocok
-if ($user && $user->password === md5($this->input('password'))) {
-    // Kalau cocok, langsung login-kan pake ID
-    \Illuminate\Support\Facades\Auth::loginUsingId($user->id, $this->boolean('remember'));
-    \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
-    return;
-}
+    // 2. Cek apakah usernya ada dan password MD5-nya cocok
+    if ($user && $user->password === md5($this->input('password'))) {
+        // Kalau cocok, langsung login-kan pake ID
+        \Illuminate\Support\Facades\Auth::loginUsingId($user->id, $this->boolean('remember'));
+        \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
+        return;
+    }
 
-// 3. JIKA GAGAL (Salah password / user tidak ketemu), langsung lempar eror tanpa lewat Auth::attempt!
-\Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
+    // 3. JIKA GAGAL (Salah password / user tidak ketemu), lempar error teks manual bahasa Indonesia
+    \Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
 
-throw \Illuminate\Validation\ValidationException::withMessages([
-    'email' => trans('auth::failed'), // Menampilkan tulisan "Kredensial tidak cocok" standar Laravel
-]);
-
-    \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
+    throw \Illuminate\Validation\ValidationException::withMessages([
+        'email' => 'Email atau password yang Anda masukkan salah.',
+    ]);
 }
 
     /**
