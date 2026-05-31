@@ -42,21 +42,23 @@ public function authenticate(): void
 {
     $this->ensureIsNotRateLimited();
 
-    $user = \App\Models\User::where('email', $this->input('email'))->first();
+// 1. Cari user berdasarkan email
+$user = \App\Models\User::where('email', $this->input('email'))->first();
 
-    // Jika user admin ditemukan dan password cocok dengan MD5
-    if ($user && $user->password === md5($this->input('password'))) {
-        // Kita paksa login menggunakan ID User agar session web-nya terdaftar sah di Laravel
-        \Illuminate\Support\Facades\Auth::loginUsingId($user->id, $this->boolean('remember'));
-    } 
-    // Fallback pakai cara standar Bcrypt Laravel jika data seeder dihapus/diupdate ke Bcrypt
-    elseif (! \Illuminate\Support\Facades\Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-        \Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
+// 2. Cek apakah usernya ada dan password MD5-nya cocok
+if ($user && $user->password === md5($this->input('password'))) {
+    // Kalau cocok, langsung login-kan pake ID
+    \Illuminate\Support\Facades\Auth::loginUsingId($user->id, $this->boolean('remember'));
+    \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
+    return;
+}
 
-        throw \Illuminate\Validation\ValidationException::withMessages([
-            'email' => trans('auth.failed'),
-        ]);
-    }
+// 3. JIKA GAGAL (Salah password / user tidak ketemu), langsung lempar eror tanpa lewat Auth::attempt!
+\Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
+
+throw \Illuminate\Validation\ValidationException::withMessages([
+    'email' => trans('auth::failed'), // Menampilkan tulisan "Kredensial tidak cocok" standar Laravel
+]);
 
     \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
 }
