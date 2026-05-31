@@ -1,7 +1,7 @@
 # Gunakan image PHP-Apache
 FROM php:8.2-apache
 
-# Install dependencies yang dibutuhkan Laravel beserta libpq-dev untuk PostgreSQL
+# Install dependencies PHP dan Node.js (untuk Vite)
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql pgsql
 
@@ -24,5 +27,9 @@ COPY . /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Atur permission
+# Install NPM dependencies dan Build assets Vite
+RUN npm install
+RUN npm run build
+
+# Atur permission folder storage dan cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
