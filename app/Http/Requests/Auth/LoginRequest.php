@@ -38,20 +38,28 @@ class LoginRequest extends FormRequest
      *
      * @throws ValidationException
      */
-    public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
+public function authenticate(): void
+{
+    $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+    // Ambil data user berdasarkan email input
+    $user = \App\Models\User::where('email', $this->input('email'))->first();
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
+    // Cek bypass khusus MD5 untuk admin pertama
+    if ($user && $user->password === md5($this->input('password'))) {
+        \Illuminate\Support\Facades\Auth::login($user, $this->boolean('remember'));
+    } 
+    // Jika gagal, pakai cara standar Laravel (Bcrypt)
+    elseif (! \Illuminate\Support\Facades\Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        \Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
 
-        RateLimiter::clear($this->throttleKey());
+        throw \Illuminate\Validation\ValidationException::withMessages([
+            'email' => trans('auth.failed'),
+        ]);
     }
+
+    \Illuminate\Support\Facades\RateLimiter::clear($this->throttleKey());
+}
 
     /**
      * Ensure the login request is not rate limited.
