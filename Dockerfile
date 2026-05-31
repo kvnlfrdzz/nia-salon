@@ -1,16 +1,17 @@
 # Gunakan image PHP-Apache
 FROM php:8.2-apache
 
-# Install dependencies yang dibutuhkan Laravel
+# Install dependencies yang dibutuhkan Laravel beserta libpq-dev untuk PostgreSQL
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libpq-dev \
     zip \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql pgsql
 
 # Set document root ke folder public Laravel
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
