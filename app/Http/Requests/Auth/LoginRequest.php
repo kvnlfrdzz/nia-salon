@@ -42,14 +42,14 @@ public function authenticate(): void
 {
     $this->ensureIsNotRateLimited();
 
-    // Ambil data user berdasarkan email input
     $user = \App\Models\User::where('email', $this->input('email'))->first();
 
-    // Cek bypass khusus MD5 untuk admin pertama
+    // Jika user admin ditemukan dan password cocok dengan MD5
     if ($user && $user->password === md5($this->input('password'))) {
-        \Illuminate\Support\Facades\Auth::login($user, $this->boolean('remember'));
+        // Kita paksa login menggunakan ID User agar session web-nya terdaftar sah di Laravel
+        \Illuminate\Support\Facades\Auth::loginUsingId($user->id, $this->boolean('remember'));
     } 
-    // Jika gagal, pakai cara standar Laravel (Bcrypt)
+    // Fallback pakai cara standar Bcrypt Laravel jika data seeder dihapus/diupdate ke Bcrypt
     elseif (! \Illuminate\Support\Facades\Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
         \Illuminate\Support\Facades\RateLimiter::hit($this->throttleKey());
 
