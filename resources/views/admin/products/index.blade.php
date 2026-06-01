@@ -26,7 +26,7 @@
                         @foreach ($products as $product)
                         <tr class="border-b border-gray-50 hover:bg-pink-50 transition">
                             <td class="py-3 px-4">
-                                <img src="{{ asset('storage/' . $product->image_path) }}" class="w-16 h-16 object-cover rounded-md shadow-sm">
+                                <img src="{{ Storage::disk('s3')->url($product->image_path) }}" class="w-16 h-16 object-cover rounded-md shadow-sm">
                             </td>
                             <td class="py-3 px-4 font-medium text-gray-700">{{ $product->name }}</td>
                             <td class="py-3 px-4 text-gray-600">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
