@@ -232,9 +232,9 @@
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-pink-100
                             border border-pink-100 aspect-[4/3] bg-pink-50">
                     @if($service->image_path)
-                        <img src="{{ asset('storage/' . $service->image_path) }}"
-                             alt="{{ $service->title }}"
-                             class="hero-img w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($service->image_path) }}"
+     alt="{{ $service->title }}"
+     class="hero-img w-full h-full object-cover" />
                     @else
                         {{-- Placeholder elegan jika belum ada gambar --}}
                         <div class="w-full h-full flex flex-col items-center justify-center
@@ -263,7 +263,7 @@
                     @if($service->image_path)
                         <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-pink-400
                                     shadow-sm cursor-pointer">
-                            <img src="{{ asset('storage/' . $service->image_path) }}"
+                            <img src="{{ Storage::disk('s3')->url($service->image_path) }}"
                                  alt="{{ $service->title }}"
                                  class="w-full h-full object-cover" />
                         </div>
@@ -473,9 +473,9 @@
                             <!-- Gambar -->
                             <div class="relative h-44 bg-pink-50 overflow-hidden">
                                 @if($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}"
-                                         alt="{{ $item->title }}"
-                                         class="w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($item->image_path) }}"
+     alt="{{ $item->title }}"
+     class="w-full h-full object-cover" />
                                 @else
                                     <div class="w-full h-full flex items-center justify-center
                                                 bg-gradient-to-br from-pink-50 to-rose-100">

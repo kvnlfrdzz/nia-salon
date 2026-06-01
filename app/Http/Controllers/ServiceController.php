@@ -30,9 +30,12 @@ class ServiceController extends Controller
         ]);
 
         $imagePath = null;
-        // GANTI KE DISK S3 (SUPABASE)
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('services', 's3');
+            // LOGIKA BARU: Tentukan folder berdasarkan kategori
+            $folderName = $validated['category'] === 'product' ? 'products' : 'services';
+            
+            // Simpan ke Supabase S3 dengan nama folder yang dinamis
+            $imagePath = $request->file('image')->store($folderName, 's3');
         }
 
         Service::create([
@@ -66,12 +69,16 @@ class ServiceController extends Controller
         $imagePath = $service->image_path;
 
         if ($request->hasFile('image')) {
-            // HAPUS GAMBAR LAMA DI S3 SEBELUM REPLACE
+            // Hapus gambar lama dari S3
             if ($service->image_path) {
                 Storage::disk('s3')->delete($service->image_path);
             }
-            // UPLOAD GAMBAR BARU KE S3
-            $imagePath = $request->file('image')->store('services', 's3');
+            
+            // LOGIKA BARU: Tentukan folder berdasarkan kategori
+            $folderName = $validated['category'] === 'product' ? 'products' : 'services';
+            
+            // Simpan gambar baru ke folder yang sesuai
+            $imagePath = $request->file('image')->store($folderName, 's3');
         }
 
         $service->update([
@@ -89,7 +96,6 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        // HAPUS GAMBAR DI S3 SAAT DATA DIAPUS
         if ($service->image_path) {
             Storage::disk('s3')->delete($service->image_path);
         }

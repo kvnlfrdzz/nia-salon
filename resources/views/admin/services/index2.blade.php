@@ -718,9 +718,9 @@
                                     {{-- Thumbnail --}}
                                     <td>
                                         @if($service->image_path)
-                                            <img src="{{ Storage::url($service->image_path) }}"
-                                                 alt="{{ $service->title }}"
-                                                 class="thumb" />
+<img src="{{ Storage::disk('s3')->url($service->image_path) }}"
+     alt="{{ $service->title }}"
+     class="thumb" />
                                         @else
                                             <div class="thumb-placeholder">
                                                 <svg xmlns="http://www.w3.org/2000/svg"

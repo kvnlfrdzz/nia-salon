@@ -186,9 +186,9 @@
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-pink-100
                             border border-pink-100 aspect-square bg-pink-50">
                     @if($product->image_path)
-                        <img src="{{ asset('storage/' . $product->image_path) }}"
-                             alt="{{ $product->name }}"
-                             class="hero-img w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($product->image_path) }}"
+     alt="{{ $product->name }}"
+     class="hero-img w-full h-full object-cover" />
                     @else
                         <div class="w-full h-full flex flex-col items-center justify-center
                                     bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100">
@@ -211,7 +211,7 @@
                 <div class="flex gap-3 mt-4">
                     @if($product->image_path)
                         <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-pink-400 shadow-sm">
-                            <img src="{{ asset('storage/' . $product->image_path) }}"
+                            <img src="{{ Storage::disk('s3')->url($product->image_path) }}"
                                  alt="{{ $product->name }}"
                                  class="w-full h-full object-cover" />
                         </div>
@@ -370,9 +370,9 @@
                                   border-pink-50 block no-underline group shadow-sm">
                             <div class="relative aspect-square bg-pink-50 overflow-hidden">
                                 @if($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}"
-                                         alt="{{ $item->name }}"
-                                         class="w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($item->image_path) }}"
+     alt="{{ $item->name }}"
+     class="w-full h-full object-cover" />
                                 @else
                                     <div class="w-full h-full flex items-center justify-center
                                                 bg-gradient-to-br from-pink-50 to-rose-100">
