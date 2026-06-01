@@ -39,8 +39,9 @@ class ProductController extends Controller
         ]);
 
         $imagePath = null;
+        // GANTI KE S3 UNTUK SUPABASE STORAGE PERMANEN
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = $request->file('image')->store('products', 's3');
         }
 
         Product::create([
@@ -78,10 +79,12 @@ class ProductController extends Controller
         $imagePath = $product->image_path;
 
         if ($request->hasFile('image')) {
+            // HAPUS GAMBAR LAMA DI S3 SEBELUM DI-REPLACE
             if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
+                Storage::disk('s3')->delete($product->image_path);
             }
-            $imagePath = $request->file('image')->store('products', 'public');
+            // UPLOAD GAMBAR BARU KE S3
+            $imagePath = $request->file('image')->store('products', 's3');
         }
 
         $product->update([
@@ -101,8 +104,9 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        // HAPUS GAMBAR DI S3 SAAT DATA PRODUK DIHAPUS
         if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
+            Storage::disk('s3')->delete($product->image_path);
         }
 
         $product->delete();

@@ -370,9 +370,9 @@
                             <div class="relative">
                                 <div class="h-44 bg-pink-50 overflow-hidden">
                                     @if($item->image_path)
-                                        <img src="{{ Storage::url($item->image_path) }}"
-                                             alt="{{ $item->title }}"
-                                             class="card-img w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($item->image_path) }}"
+     alt="{{ $item->title }}"
+     class="card-img w-full h-full object-cover" />
                                     @else
                                         <div class="w-full h-full flex items-center justify-center
                                                     bg-gradient-to-br from-pink-50 to-rose-50">
@@ -588,9 +588,9 @@
 
                         <div class="relative h-52 bg-pink-50 overflow-hidden">
                             @if($service->image_path)
-                                <img src="{{ Storage::url($service->image_path) }}"
-                                     alt="{{ $service->title }}"
-                                     class="card-img w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($service->image_path) }}"
+     alt="{{ $service->title }}"
+     class="card-img w-full h-full object-cover" />
                             @else
                                 <div class="w-full h-full flex items-center justify-center
                                             bg-gradient-to-br from-pink-50 to-pink-100">
@@ -711,9 +711,9 @@
                            class="block no-underline flex-1">
                             <div class="relative aspect-square bg-pink-50 overflow-hidden">
                                 @if($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}"
-                                         alt="{{ $item->title }}"
-                                         class="card-img w-full h-full object-cover" />
+<img src="{{ Storage::disk('s3')->url($item->image_path) }}"
+     alt="{{ $item->title }}"
+     class="card-img w-full h-full object-cover" />
                                 @else
                                     <div class="w-full h-full flex items-center justify-center
                                                 bg-gradient-to-br from-pink-50 to-rose-50">

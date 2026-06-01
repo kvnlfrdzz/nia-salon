@@ -21,18 +21,18 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        // ★ 'category' wajib ada di sini — inilah penyebab masalah 1
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'price'       => 'required|numeric|min:0',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'category'    => 'required|in:service,product', // ← TAMBAHAN WAJIB
+            'category'    => 'required|in:service,product',
         ]);
 
         $imagePath = null;
+        // GANTI KE DISK S3 (SUPABASE)
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('services', 'public');
+            $imagePath = $request->file('image')->store('services', 's3');
         }
 
         Service::create([
@@ -40,7 +40,7 @@ class ServiceController extends Controller
             'description' => $validated['description'],
             'price'       => $validated['price'],
             'image_path'  => $imagePath,
-            'category'    => $validated['category'], // ← TAMBAHAN WAJIB
+            'category'    => $validated['category'],
         ]);
 
         return redirect()
@@ -60,16 +60,18 @@ class ServiceController extends Controller
             'description' => 'required|string',
             'price'       => 'required|numeric|min:0',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'category'    => 'required|in:service,product', // ← TAMBAHAN WAJIB
+            'category'    => 'required|in:service,product',
         ]);
 
         $imagePath = $service->image_path;
 
         if ($request->hasFile('image')) {
+            // HAPUS GAMBAR LAMA DI S3 SEBELUM REPLACE
             if ($service->image_path) {
-                Storage::disk('public')->delete($service->image_path);
+                Storage::disk('s3')->delete($service->image_path);
             }
-            $imagePath = $request->file('image')->store('services', 'public');
+            // UPLOAD GAMBAR BARU KE S3
+            $imagePath = $request->file('image')->store('services', 's3');
         }
 
         $service->update([
@@ -77,7 +79,7 @@ class ServiceController extends Controller
             'description' => $validated['description'],
             'price'       => $validated['price'],
             'image_path'  => $imagePath,
-            'category'    => $validated['category'], // ← TAMBAHAN WAJIB
+            'category'    => $validated['category'],
         ]);
 
         return redirect()
@@ -87,8 +89,9 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        // HAPUS GAMBAR DI S3 SAAT DATA DIAPUS
         if ($service->image_path) {
-            Storage::disk('public')->delete($service->image_path);
+            Storage::disk('s3')->delete($service->image_path);
         }
         $service->delete();
 
